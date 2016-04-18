@@ -16,7 +16,13 @@ import android.widget.TimePicker;
 import android.app.AlarmManager;
 
 
-
+/**
+ *class AlarmMainActivity opens a time picker layout and sends a pending intent to the system
+ * allowing people to chose when to set the alarm
+ *
+ * -Dylan
+ *
+ */
 public class AlarmMainActivity extends AppCompatActivity {
     private PendingIntent pIntent;
     Calendar alarmCalendar = Calendar.getInstance();
@@ -24,39 +30,74 @@ public class AlarmMainActivity extends AppCompatActivity {
     private TimePicker altimePicker;
     AlarmManager mang;
 
+    private int block=0;
+    private int math=0;
+    private int shark=0;
+    private int win=0;
+    private int buttonum=1;
+
+    /**
+     * method onCreate reads in the flags for which games to run for the alarm
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_main);
+        Intent linker =getIntent();
+        Bundle linkerbund = linker.getExtras();
+        block = linkerbund.getInt("block");
+        math = linkerbund.getInt("math");
+        shark = linkerbund.getInt("shark");
+        win= linkerbund.getInt("win");
+        buttonum=linkerbund.getInt("buttonum");
 
         Intent alarmIntent = new Intent(AlarmMainActivity.this, alarmReceiver.class);
-        pIntent = PendingIntent.getBroadcast(AlarmMainActivity.this, 0, alarmIntent, 0);
+        pIntent = PendingIntent.getBroadcast(AlarmMainActivity.this, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         altimePicker = (TimePicker) findViewById(R.id.timePicker);
         mang= (AlarmManager) getSystemService(ALARM_SERVICE);
 
     }
 
+    /**
+     * method startalarm sends the pending intent to the system to later be processed by the
+     * alarm reciever
+     *
+     * @param pIntent
+     */
     public void startalarm(PendingIntent pIntent){
         alarmCalendar.set(Calendar.HOUR_OF_DAY, altimePicker.getCurrentHour());
         alarmCalendar.set(Calendar.MINUTE, altimePicker.getCurrentMinute());
         mang.set(AlarmManager.RTC_WAKEUP, alarmCalendar.getTimeInMillis(), pIntent);
-        System.out.println("Alarm was set for!"+alarmCalendar.getTime());
-        System.out.println("Actual time: "+testCal.getTime());
+        String disp="Alarm was set for!"+alarmCalendar.getTime();
+        disp="Actual time: "+testCal.getTime();
+
     }
 
+    /**
+     * method buttonPress handles the clicks to the "SET ALARM" button of the timepicker
+     * and calls 'startalarm'
+     *
+     * @param view v
+     */
     public void buttonPress(View v) {
         int duration = Toast.LENGTH_SHORT;
         Context context = getApplicationContext();
-        CharSequence text = "Placeholding text, you shouldnt read this!";
-        Toast toast = Toast.makeText(context, text, duration);
+
         switch (v.getId()) {
             case R.id.setbutton:
-                text = "Time should go here";
-                toast = Toast.makeText(context, text, duration);
-                toast.show();
+
                 Intent myIntent = new Intent(AlarmMainActivity.this, alarmReceiver.class);
+                myIntent.putExtra("flaghigh",1);
+                myIntent.putExtra("block",block);
+                myIntent.putExtra("math",math);
+                myIntent.putExtra("shark",shark);
+                myIntent.putExtra("win",win);
+                myIntent.putExtra("buttonum",buttonum);
                 pIntent = pIntent.getBroadcast(AlarmMainActivity.this, 0, myIntent, 0);
+
                 startalarm(pIntent);
+                finish();
                 break;
         }
     }

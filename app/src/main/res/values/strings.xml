@@ -3,4 +3,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_menu">menuActivity</string>
+    <string name="title_activity_math_main">mathMainActivity</string>
+    <string name="title_activity_droidz">DroidzActivity</string>
+    <string name="title_activity_shark_attack">SharkAttack</string>
 </resources>
